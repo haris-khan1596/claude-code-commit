@@ -1,71 +1,50 @@
-# claude-code-commits README
+# claude-code-commits
 
-This is the README for your extension "claude-code-commits". After writing up a brief description, we recommend including the following sections.
+Generate conventional commit messages with Claude Code CLI, right from VS Code's Source Control panel.
+
+Hit the sparkle button, get a well-crafted commit message. Review it, commit. That's it.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- **One-click commit messages** — A sparkle button appears in the Source Control title bar. Click it to generate a commit message from your staged changes.
+- **Conventional Commits** — Messages follow the `<type>(<scope>): <description>` format with proper imperative mood, scoping, and 72-char line limits.
+- **Style-aware** — Analyzes your recent commit history to match your project's existing conventions.
+- **User-controlled** — The extension only generates and populates the message. It never commits, pushes, or performs any git write operations on your behalf.
+- **Configurable model** — Choose which Claude model to use (sonnet, opus, haiku, etc.) via settings.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) must be installed and available on your `PATH`.
+- Git must be installed.
+- VS Code 1.109.0 or later.
+
+## How It Works
+
+1. Stage your changes in Git as usual.
+2. Click the sparkle button in the Source Control title bar, or run `Generate commit message with Claude Code CLI` from the command palette.
+3. The extension sends your staged diff to Claude via the CLI.
+4. Claude generates a conventional commit message and populates the SCM input box.
+5. Review the message, edit if needed, and commit.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+This extension contributes the following setting:
 
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+* `sparkleCommit.claudeModel`: Claude model alias or name (default: `"sonnet"`). Run `claude --models` to see available options.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Test suite is currently a stub — full test coverage is planned.
+- This is a pre-release version (0.0.1).
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+Initial release — core commit message generation with Claude Code CLI integration.
 
 ---
 
-## Following extension guidelines
+## License
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+See [LICENSE](LICENSE) for details.
