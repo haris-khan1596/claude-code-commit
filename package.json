@@ -1,6 +1,7 @@
 {
   "name": "claude-code-commits",
   "displayName": "claude-code-commits",
+  "publisher": "HarisKhan1596",
   "description": "One-click conventional commit messages powered by Claude Code CLI. Analyzes your staged changes and generates well-structured commit messages right in VS Code's Source Control panel.",
   "version": "0.0.1",
   "engines": {
