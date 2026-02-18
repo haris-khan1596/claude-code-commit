@@ -29,6 +29,7 @@ TypeScript 5.9 (strict mode): Follow standard conventions
 ## Recent Changes
 
 - 001-sparkle-commit: Added TypeScript 5.9 (strict mode) + VS Code Extension API (`@types/vscode ^1.109.0`), Node.js `child_process` (built-in)
+- test commit from extension downloaded from marktetplace
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
