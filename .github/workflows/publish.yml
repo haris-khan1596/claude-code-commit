@@ -51,7 +51,8 @@ jobs:
 
       - run: npm ci
 
-      - run: npm test && npm run lint
+      - name: Run tests and lint
+        run: xvfb-run -a npm test && npm run lint
 
       - name: Build .vsix package
         run: npx @vscode/vsce package
