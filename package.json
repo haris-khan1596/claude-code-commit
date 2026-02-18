@@ -41,7 +41,7 @@
       "properties": {
         "sparkleCommit.claudeModel": {
           "type": "string",
-          "default": "sonnet",
+          "default": "haiku",
           "description": "Claude model alias or name (e.g., 'sonnet', 'opus'). Run `claude --models` to see available options."
         }
       }
