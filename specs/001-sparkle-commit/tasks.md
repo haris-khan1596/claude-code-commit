@@ -24,8 +24,8 @@
 
 **Purpose**: Update project scaffold from hello-world template to sparkle-commit structure
 
-- [ ] T001 Update `package.json` to register `claude-code-commits.generateCommit` command with sparkle icon `$(sparkle)`, add `scm/title` menu contribution with `"when": "scmProvider == git"`, add `sparkleCommit.claudeModel` configuration setting with default `"sonnet"`, and add `activationEvents` for `onCommand:claude-code-commits.generateCommit`
-- [ ] T002 Create VS Code Git extension type declarations in `src/git-extension.d.ts` defining `GitExtension`, `API`, `Repository`, and `InputBox` interfaces needed for `vscode.git` API access (per research R2)
+- [x] T001 Update `package.json` to register `claude-code-commits.generateCommit` command with sparkle icon `$(sparkle)`, add `scm/title` menu contribution with `"when": "scmProvider == git"`, add `sparkleCommit.claudeModel` configuration setting with default `"sonnet"`, and add `activationEvents` for `onCommand:claude-code-commits.generateCommit`
+- [x] T002 Create VS Code Git extension type declarations in `src/git-extension.d.ts` defining `GitExtension`, `API`, `Repository`, and `InputBox` interfaces needed for `vscode.git` API access (per research R2)
 
 ---
 
@@ -35,9 +35,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 [P] Implement `src/git.ts` with three exported async functions: `isGitRepository(cwd: string): Promise<boolean>` (runs `git rev-parse --git-dir`), `hasStagedChanges(cwd: string): Promise<boolean>` (runs `git diff --staged --stat`), and `getStagedDiff(cwd: string): Promise<string>` (runs `git diff --staged`). All use `child_process.exec` wrapped in promises. Return clear results; do NOT show VS Code UI messages.
-- [ ] T004 [P] Implement `src/claude.ts` with two exported async functions: `isClaudeInstalled(): Promise<boolean>` (runs `claude --version`) and `generateCommitMessage(prompt: string, model: string, cwd: string): Promise<string>` (spawns `claude -p --model <model> --output-format text --tools "" --max-turns 1`, writes prompt to stdin, reads stdout, trims whitespace). Reject on non-zero exit or empty output.
-- [ ] T005 [P] Implement `src/prompt.ts` with two exported async functions: `loadPromptTemplate(workspaceRoot: string): Promise<string>` (reads `.claude/commands/git.commit.md` via `fs.promises.readFile`) and `assemblePrompt(template: string, diff: string): string` (concatenates template + `"\n\n--- STAGED GIT DIFF BELOW ---\n\n"` + diff + instruction suffix per research R5).
+- [x] T003 [P] Implement `src/git.ts` with three exported async functions: `isGitRepository(cwd: string): Promise<boolean>` (runs `git rev-parse --git-dir`), `hasStagedChanges(cwd: string): Promise<boolean>` (runs `git diff --staged --stat`), and `getStagedDiff(cwd: string): Promise<string>` (runs `git diff --staged`). All use `child_process.exec` wrapped in promises. Return clear results; do NOT show VS Code UI messages.
+- [x] T004 [P] Implement `src/claude.ts` with two exported async functions: `isClaudeInstalled(): Promise<boolean>` (runs `claude --version`) and `generateCommitMessage(prompt: string, model: string, cwd: string): Promise<string>` (spawns `claude -p --model <model> --output-format text --tools "" --max-turns 1`, writes prompt to stdin, reads stdout, trims whitespace). Reject on non-zero exit or empty output.
+- [x] T005 [P] Implement `src/prompt.ts` with two exported async functions: `loadPromptTemplate(workspaceRoot: string): Promise<string>` (reads `.claude/commands/git.commit.md` via `fs.promises.readFile`) and `assemblePrompt(template: string, diff: string): string` (concatenates template + `"\n\n--- STAGED GIT DIFF BELOW ---\n\n"` + diff + instruction suffix per research R5).
 
 **Checkpoint**: Foundation ready — all three utility modules provide the building blocks for user story implementation
 
@@ -51,8 +51,8 @@
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Rewrite `src/extension.ts` `activate` function: remove hello-world command, register `claude-code-commits.generateCommit` command. The command handler should: (0) check a module-level `isGenerating` flag and return early if true; set it to true on entry and false on completion/error (re-entrancy guard per spec edge case), (1) get the workspace root folder, (2) call `isGitRepository`, (3) call `hasStagedChanges`, (4) call `isClaudeInstalled`, (5) call `loadPromptTemplate`, (6) wrap steps 5-10 in `vscode.window.withProgress` with `ProgressLocation.SourceControl` and title "Generating commit message...", (7) call `getStagedDiff`, (8) call `assemblePrompt`, (9) read `sparkleCommit.claudeModel` from `vscode.workspace.getConfiguration`, (10) call `generateCommitMessage`, (11) get the Git extension API via `vscode.extensions.getExtension<GitExtension>('vscode.git')`, get `repositories[0]`, and set `repository.inputBox.value` to the trimmed result. Push the disposable to `context.subscriptions`.
-- [ ] T007 [US1] Remove the old `claude-code-commits.helloWorld` command registration from `package.json` (replaced by `generateCommit` in T001) and verify the `deactivate` function in `src/extension.ts` is a clean no-op export
+- [x] T006 [US1] Rewrite `src/extension.ts` `activate` function: remove hello-world command, register `claude-code-commits.generateCommit` command. The command handler should: (0) check a module-level `isGenerating` flag and return early if true; set it to true on entry and false on completion/error (re-entrancy guard per spec edge case), (1) get the workspace root folder, (2) call `isGitRepository`, (3) call `hasStagedChanges`, (4) call `isClaudeInstalled`, (5) call `loadPromptTemplate`, (6) wrap steps 5-10 in `vscode.window.withProgress` with `ProgressLocation.SourceControl` and title "Generating commit message...", (7) call `getStagedDiff`, (8) call `assemblePrompt`, (9) read `sparkleCommit.claudeModel` from `vscode.workspace.getConfiguration`, (10) call `generateCommitMessage`, (11) get the Git extension API via `vscode.extensions.getExtension<GitExtension>('vscode.git')`, get `repositories[0]`, and set `repository.inputBox.value` to the trimmed result. Push the disposable to `context.subscriptions`.
+- [x] T007 [US1] Remove the old `claude-code-commits.helloWorld` command registration from `package.json` (replaced by `generateCommit` in T001) and verify the `deactivate` function in `src/extension.ts` is a clean no-op export
 
 **Checkpoint**: User Story 1 is fully functional — clicking ✨ in SCM header generates and populates a commit message
 
@@ -66,8 +66,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T008 [US2] Add error handling to the command handler in `src/extension.ts`: after each precondition check (steps 2-5 in T006), if the check fails, call `vscode.window.showErrorMessage` with the specific actionable message and return early. Error messages: (1) "No Git repository found in this workspace." for no repo, (2) "No staged changes found. Stage your changes with `git add` first." for no staged changes, (3) "Claude Code CLI not found. Install it from https://docs.anthropic.com/en/docs/claude-code/getting-started" for no CLI, (4) "Prompt template not found at `.claude/commands/git.commit.md`. Create this file with your commit message guidelines." for missing template.
-- [ ] T009 [US2] Add error handling for Claude CLI invocation failures in `src/extension.ts`: wrap `generateCommitMessage` call in try/catch, show `vscode.window.showErrorMessage` with "Failed to generate commit message: <error details>" on rejection. Also handle empty trimmed response: show "Claude returned an empty response. Try again or check your prompt template."
+- [x] T008 [US2] Add error handling to the command handler in `src/extension.ts`: after each precondition check (steps 2-5 in T006), if the check fails, call `vscode.window.showErrorMessage` with the specific actionable message and return early. Error messages: (1) "No Git repository found in this workspace." for no repo, (2) "No staged changes found. Stage your changes with `git add` first." for no staged changes, (3) "Claude Code CLI not found. Install it from https://docs.anthropic.com/en/docs/claude-code/getting-started" for no CLI, (4) "Prompt template not found at `.claude/commands/git.commit.md`. Create this file with your commit message guidelines." for missing template.
+- [x] T009 [US2] Add error handling for Claude CLI invocation failures in `src/extension.ts`: wrap `generateCommitMessage` call in try/catch, show `vscode.window.showErrorMessage` with "Failed to generate commit message: <error details>" on rejection. Also handle empty trimmed response: show "Claude returned an empty response. Try again or check your prompt template."
 
 **Checkpoint**: User Stories 1 AND 2 both work — happy path generates messages, all error paths show clear notifications
 
@@ -81,7 +81,7 @@
 
 ### Implementation for User Story 3
 
-- [ ] T010 [US3] Validate and fix model configuration wiring in `src/extension.ts` and `package.json`: ensure `vscode.workspace.getConfiguration('sparkleCommit').get<string>('claudeModel', 'sonnet')` is read before calling `generateCommitMessage` and passed as the `model` argument. Confirm `package.json` contributes `configuration.properties["sparkleCommit.claudeModel"]` with type `string`, default `"sonnet"`, and description. If any wiring is missing or incorrect from T001/T006, fix it in this task.
+- [x] T010 [US3] Validate and fix model configuration wiring in `src/extension.ts` and `package.json`: ensure `vscode.workspace.getConfiguration('sparkleCommit').get<string>('claudeModel', 'sonnet')` is read before calling `generateCommitMessage` and passed as the `model` argument. Confirm `package.json` contributes `configuration.properties["sparkleCommit.claudeModel"]` with type `string`, default `"sonnet"`, and description. If any wiring is missing or incorrect from T001/T006, fix it in this task.
 
 **Checkpoint**: All user stories are independently functional — message generation, error handling, and model configuration all work
 
@@ -91,9 +91,9 @@
 
 **Purpose**: Final validation, cleanup, and build verification
 
-- [ ] T011 [P] Run `npm run compile` to verify the TypeScript project compiles without errors
-- [ ] T012 [P] Run `npm run lint` and fix any linting errors across all modified files
-- [ ] T013 Verify end-to-end via `quickstart.md` validation: launch Extension Development Host (F5), open a Git repo with staged changes, click ✨ button, confirm commit message appears in SCM input box
+- [x] T011 [P] Run `npm run compile` to verify the TypeScript project compiles without errors
+- [x] T012 [P] Run `npm run lint` and fix any linting errors across all modified files
+- [x] T013 Verify end-to-end via `quickstart.md` validation: launch Extension Development Host (F5), open a Git repo with staged changes, click ✨ button, confirm commit message appears in SCM input box
 
 ---
 
