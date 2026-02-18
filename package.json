@@ -1,7 +1,7 @@
 {
   "name": "claude-code-commits",
   "displayName": "claude-code-commits",
-  "description": "It commits using your claude code.",
+  "description": "Generate conventional commit messages with Claude Code CLI.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.109.0"
@@ -9,15 +9,37 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:claude-code-commits.generateCommit"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "claude-code-commits.helloWorld",
-        "title": "Hello World"
+        "command": "claude-code-commits.generateCommit",
+        "title": "Generate commit message with Claude Code CLI",
+        "icon": "$(sparkle)"
       }
-    ]
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "claude-code-commits.generateCommit",
+          "group": "navigation",
+          "when": "scmProvider == git"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Sparkle Commit",
+      "properties": {
+        "sparkleCommit.claudeModel": {
+          "type": "string",
+          "default": "sonnet",
+          "description": "Claude model alias or name (e.g., 'sonnet', 'opus'). Run `claude --models` to see available options."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
