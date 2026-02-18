@@ -4,7 +4,7 @@ import { isClaudeInstalled, generateCommitMessage } from './claude';
 import { loadPromptTemplate, assemblePrompt } from './prompt';
 import type { GitExtension } from './git-extension';
 
-const SHELL_METACHAR_PATTERN = /[;&|$`'"\\n\r]/;
+const SHELL_METACHAR_PATTERN = /[;&|$`'"\\]|\n|\r/;
 
 let isGenerating = false;
 
