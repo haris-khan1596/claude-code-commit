@@ -56,5 +56,10 @@ export async function hasAnyChanges(cwd: string): Promise<boolean> {
 }
 
 export async function getAllDiff(cwd: string): Promise<string> {
-	return execPromise('git diff HEAD', cwd);
+	try {
+		return await execPromise('git diff HEAD', cwd);
+	} catch {
+		// HEAD doesn't exist yet (initial commit) — fall back to staged diff
+		return execPromise('git diff --staged', cwd);
+	}
 }
