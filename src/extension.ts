@@ -48,20 +48,8 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 
-			// (5) Load prompt template
-			let template: string;
-			try {
-				template = await loadPromptTemplate(workspaceRoot);
-			} catch {
-				const action = await vscode.window.showWarningMessage(
-					'Prompt template not found at .claude/commands/git.commit.md',
-					'View Documentation'
-				);
-				if (action === 'View Documentation') {
-					vscode.env.openExternal(vscode.Uri.parse('https://docs.anthropic.com/claude-code'));
-				}
-				return;
-			}
+			// (5) Load prompt template (uses built-in default if .vscode/commit-rules.md is absent)
+			const template = await loadPromptTemplate(workspaceRoot);
 
 			// (6) Read model configuration
 			const model = vscode.workspace.getConfiguration('sparkleCommit').get<string>('claudeModel', 'sonnet');
