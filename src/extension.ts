@@ -48,11 +48,13 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 
-			// (5) Load prompt template (uses built-in default if .vscode/commit-rules.md is absent)
-			const template = await loadPromptTemplate(workspaceRoot);
+			// (5) Load prompt template (uses built-in default if custom rules file is absent)
+			const config = vscode.workspace.getConfiguration('sparkleCommit');
+			const rulesPath = config.get<string>('commitRulesPath');
+			const template = await loadPromptTemplate(workspaceRoot, rulesPath);
 
 			// (6) Read model configuration
-			const model = vscode.workspace.getConfiguration('sparkleCommit').get<string>('claudeModel', 'sonnet');
+			const model = config.get<string>('claudeModel', 'haiku');
 			if (!model || SHELL_METACHAR_PATTERN.test(model)) {
 				vscode.window.showWarningMessage('Invalid Claude model name. Please check your sparkleCommit.claudeModel setting.');
 				return;

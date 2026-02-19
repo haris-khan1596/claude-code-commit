@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-const PROMPT_RELATIVE_PATH = ['.vscode', 'commit-rules.md'];
+const DEFAULT_RULES_PATH = '.vscode/commit-rules.md';
 
 const SEPARATOR = '\n\n--- STAGED GIT DIFF BELOW ---\n\n';
 
@@ -39,9 +39,10 @@ feat, fix, docs, style, refactor, perf, test, build, ci, chore
 If changes are unrelated, suggest splitting into multiple commits.
 Never include secrets, tokens, or sensitive data.`;
 
-export async function loadPromptTemplate(workspaceRoot: string): Promise<string> {
+export async function loadPromptTemplate(workspaceRoot: string, rulesPath?: string): Promise<string> {
 	try {
-		const templatePath = path.join(workspaceRoot, ...PROMPT_RELATIVE_PATH);
+		const relativePath = rulesPath || DEFAULT_RULES_PATH;
+		const templatePath = path.join(workspaceRoot, relativePath);
 		return await fs.promises.readFile(templatePath, 'utf-8');
 	} catch {
 		return DEFAULT_TEMPLATE;

@@ -42,7 +42,12 @@
         "sparkleCommit.claudeModel": {
           "type": "string",
           "default": "haiku",
-          "description": "Claude model alias or name (e.g., 'sonnet', 'opus'). Run `claude --models` to see available options."
+          "description": "Claude model alias (sonnet, opus, haiku) or full model name (e.g., 'claude-sonnet-4-5-20250929')."
+        },
+        "sparkleCommit.commitRulesPath": {
+          "type": "string",
+          "default": ".vscode/commit-rules.md",
+          "description": "Relative path to a custom commit rules file. If the file doesn't exist, the built-in default prompt is used."
         }
       }
     }
