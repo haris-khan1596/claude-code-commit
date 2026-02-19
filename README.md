@@ -1,50 +1,85 @@
 # claude-code-commits
 
-Generate conventional commit messages with Claude Code CLI, right from VS Code's Source Control panel.
+**Already using Claude Code? Get commit messages for free — one click, zero config.**
 
-Hit the sparkle button, get a well-crafted commit message. Review it, commit. That's it.
+Stop writing commit messages by hand. This extension uses the Claude Code CLI you already have installed to analyze your staged changes and generate clean, conventional commit messages — right in the Source Control panel.
+
+> No API keys. No extra subscriptions. If you have Claude Code CLI, you're ready to go.
+
+## Quick Start
+
+1. Install the extension
+2. Stage your changes
+3. Click the sparkle button in Source Control
+4. Review, edit if needed, commit
+
+That's it. Works out of the box.
 
 ## Features
 
-- **One-click commit messages** — A sparkle button appears in the Source Control title bar. Click it to generate a commit message from your staged changes.
-- **Conventional Commits** — Messages follow the `<type>(<scope>): <description>` format with proper imperative mood, scoping, and 72-char line limits.
-- **Style-aware** — Analyzes your recent commit history to match your project's existing conventions.
-- **User-controlled** — The extension only generates and populates the message. It never commits, pushes, or performs any git write operations on your behalf.
-- **Configurable model** — Choose which Claude model to use (sonnet, opus, haiku, etc.) via settings.
+- **One-click generation** — Sparkle button in the Source Control title bar, or use the command palette
+- **Multiple commit styles** — Conventional (`type(scope): desc`), prefix (`type: desc`), or simple (plain message)
+- **Flexible diff source** — Analyze staged changes, all working tree changes, or auto-detect
+- **Zero config needed** — Built-in prompt works immediately; customize only if you want to
+- **Custom commit rules** — Drop a markdown file in your workspace to define your own commit style
+- **Model selection** — Switch between Haiku (fast), Sonnet (balanced), or Opus (most capable)
+- **Safe by design** — Only populates the message box. Never commits, pushes, or runs any git write operations
 
 ## Requirements
 
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) must be installed and available on your `PATH`.
-- Git must be installed.
-- VS Code 1.109.0 or later.
+| Requirement | Details |
+|---|---|
+| VS Code | `1.109.0` or later |
+| Claude Code CLI | [Install here](https://docs.anthropic.com/en/docs/claude-code) — must be on your `PATH` and authenticated |
+| Git | Installed and initialized in your workspace |
 
-## How It Works
+## Settings
 
-1. Stage your changes in Git as usual.
-2. Click the sparkle button in the Source Control title bar, or run `Generate commit message with Claude Code CLI` from the command palette.
-3. The extension sends your staged diff to Claude via the CLI.
-4. Claude generates a conventional commit message and populates the SCM input box.
-5. Review the message, edit if needed, and commit.
+| Setting | Default | Description |
+|---|---|---|
+| `sparkleCommit.claudeModel` | `haiku` | Model alias (`sonnet`, `opus`, `haiku`) or full model name |
+| `sparkleCommit.commitStyle` | `conventional` | Message format: `conventional`, `prefix`, or `simple` |
+| `sparkleCommit.diffSource` | `staged` | Changes to analyze: `staged`, `all`, or `auto` |
+| `sparkleCommit.commitRulesPath` | `.vscode/commit-rules.md` | Path to custom commit rules file (overrides `commitStyle`) |
 
-## Extension Settings
+## Customizing the Prompt
 
-This extension contributes the following setting:
+By default the extension uses a built-in Conventional Commits prompt. To override it:
 
-* `sparkleCommit.claudeModel`: Claude model alias or name (default: `"sonnet"`). Run `claude --models` to see available options.
+1. Create a file at `.vscode/commit-rules.md` (or set a custom path via `sparkleCommit.commitRulesPath`)
+2. Write your commit rules in plain text or markdown
+3. The extension will use your file instead of the default
 
-## Known Issues
+If the file is missing or unreadable, the built-in default kicks in automatically.
 
-- Test suite is currently a stub — full test coverage is planned.
-- This is a pre-release version (0.0.1).
+## Feedback & Ideas
+
+This extension is actively maintained and shaped by its users. If you have a feature request, found a bug, or just want to suggest how commit messages could be smarter — open an issue:
+
+[**Open an issue on GitHub**](https://github.com/haris-khan1596/claude-code-commit/issues/new)
+
+Some ideas to get you started:
+- Commit styles you'd like supported (e.g., emoji, gitmoji, custom prefixes)
+- Language support for non-English commit messages
+- Workflow improvements (multi-repo, monorepo, staged file filtering)
+- Anything that would make this your default commit workflow
+
+Every suggestion helps. Even a quick "I wish it could..." is useful.
 
 ## Release Notes
 
-### 0.0.1
+### 1.1.0
+- Built-in default prompt — works out of the box, no template file needed
+- Custom prompt override via configurable rules file path
+- Commit style setting — conventional, prefix, or simple formats
+- Diff source setting — staged, all, or auto-detect
+- Marketplace discoverability improvements (categories + keywords)
 
-Initial release — core commit message generation with Claude Code CLI integration.
+### 1.0.1
+- Initial release — one-click commit message generation with Claude Code CLI
 
 ---
 
 ## License
 
-See [LICENSE](LICENSE) for details.
+[LICENSE](LICENSE)

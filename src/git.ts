@@ -39,3 +39,27 @@ export async function hasStagedChanges(cwd: string): Promise<boolean> {
 export async function getStagedDiff(cwd: string): Promise<string> {
 	return execPromise('git diff --staged', cwd);
 }
+
+export async function hasAnyChanges(cwd: string): Promise<boolean> {
+	try {
+		const output = await execPromise('git diff HEAD --stat', cwd);
+		return output.trim().length > 0;
+	} catch {
+		// HEAD may not exist on initial commit — fall back to porcelain
+		try {
+			const output = await execPromise('git status --porcelain', cwd);
+			return output.trim().length > 0;
+		} catch {
+			return false;
+		}
+	}
+}
+
+export async function getAllDiff(cwd: string): Promise<string> {
+	try {
+		return await execPromise('git diff HEAD', cwd);
+	} catch {
+		// HEAD doesn't exist yet (initial commit) — fall back to staged diff
+		return execPromise('git diff --staged', cwd);
+	}
+}

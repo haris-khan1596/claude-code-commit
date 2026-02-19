@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { isGitRepository, hasStagedChanges, getStagedDiff } from './git';
+import { isGitRepository, hasStagedChanges, hasAnyChanges, getStagedDiff, getAllDiff } from './git';
 import { isClaudeInstalled, generateCommitMessage } from './claude';
-import { loadPromptTemplate, assemblePrompt } from './prompt';
+import { loadPromptTemplate, assemblePrompt, type CommitStyle } from './prompt';
 import type { GitExtension } from './git-extension';
 
 const SHELL_METACHAR_PATTERN = /[;&|$`'"\\]|\n|\r/;
@@ -30,13 +30,32 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 
-			// (3) Check staged changes
-			if (!await hasStagedChanges(workspaceRoot)) {
-				vscode.window.showWarningMessage('Please stage your changes before generating a commit message.');
-				return;
+			// (3) Read configuration
+			const config = vscode.workspace.getConfiguration('sparkleCommit');
+			const diffSource = config.get<string>('diffSource', 'staged');
+
+			// (4) Check for changes based on diffSource setting
+			const hasStaged = await hasStagedChanges(workspaceRoot);
+
+			if (diffSource === 'staged') {
+				if (!hasStaged) {
+					vscode.window.showWarningMessage('Please stage your changes before generating a commit message.');
+					return;
+				}
+			} else if (diffSource === 'all') {
+				if (!hasStaged && !await hasAnyChanges(workspaceRoot)) {
+					vscode.window.showWarningMessage('No changes found in the working tree.');
+					return;
+				}
+			} else {
+				// 'auto': use staged if available, otherwise check for any changes
+				if (!hasStaged && !await hasAnyChanges(workspaceRoot)) {
+					vscode.window.showWarningMessage('No changes found. Please make or stage changes first.');
+					return;
+				}
 			}
 
-			// (4) Check Claude CLI installed
+			// (5) Check Claude CLI installed
 			if (!await isClaudeInstalled()) {
 				const action = await vscode.window.showWarningMessage(
 					'Claude Code CLI is not installed. Please install it first: https://docs.anthropic.com/claude-code',
@@ -48,23 +67,13 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 
-			// (5) Load prompt template
-			let template: string;
-			try {
-				template = await loadPromptTemplate(workspaceRoot);
-			} catch {
-				const action = await vscode.window.showWarningMessage(
-					'Prompt template not found at .claude/commands/git.commit.md',
-					'View Documentation'
-				);
-				if (action === 'View Documentation') {
-					vscode.env.openExternal(vscode.Uri.parse('https://docs.anthropic.com/claude-code'));
-				}
-				return;
-			}
+			// (6) Load prompt template (uses built-in default if custom rules file is absent)
+			const rulesPath = config.get<string>('commitRulesPath');
+			const commitStyle = config.get<CommitStyle>('commitStyle', 'conventional');
+			const template = await loadPromptTemplate(workspaceRoot, rulesPath, commitStyle);
 
 			// (6) Read model configuration
-			const model = vscode.workspace.getConfiguration('sparkleCommit').get<string>('claudeModel', 'sonnet');
+			const model = config.get<string>('claudeModel', 'haiku');
 			if (!model || SHELL_METACHAR_PATTERN.test(model)) {
 				vscode.window.showWarningMessage('Invalid Claude model name. Please check your sparkleCommit.claudeModel setting.');
 				return;
@@ -77,8 +86,18 @@ export function activate(context: vscode.ExtensionContext) {
 					title: 'Generating commit message with Claude...'
 				},
 				async () => {
-					// (7) Get staged diff
-					const diff = await getStagedDiff(workspaceRoot);
+					// (7) Get diff based on diffSource setting
+					let diff: string;
+					if (diffSource === 'staged') {
+						diff = await getStagedDiff(workspaceRoot);
+					} else if (diffSource === 'all') {
+						diff = await getAllDiff(workspaceRoot);
+					} else {
+						// 'auto': prefer staged, fall back to all
+						diff = hasStaged
+							? await getStagedDiff(workspaceRoot)
+							: await getAllDiff(workspaceRoot);
+					}
 
 					// (8) Assemble prompt
 					const prompt = assemblePrompt(template, diff);

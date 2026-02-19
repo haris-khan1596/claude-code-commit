@@ -13,10 +13,21 @@
     "url": "https://github.com/haris-khan1596/claude-code-commit.git"
   },
   "categories": [
-    "Other"
+    "SCM Providers",
+    "Snippets",
+    "AI"
   ],
-  "activationEvents": [
-    "onCommand:claude-code-commits.generateCommit"
+  "keywords": [
+    "ai",
+    "claude",
+    "git",
+    "commit",
+    "conventional-commits",
+    "anthropic",
+    "conventional-commit",
+    "message",
+    "generate",
+    "cli-tool"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -42,7 +53,34 @@
         "sparkleCommit.claudeModel": {
           "type": "string",
           "default": "haiku",
-          "description": "Claude model alias or name (e.g., 'sonnet', 'opus'). Run `claude --models` to see available options."
+          "description": "Claude model alias (sonnet, opus, haiku) or full model name (e.g., 'claude-sonnet-4-5-20250929')."
+        },
+        "sparkleCommit.commitRulesPath": {
+          "type": "string",
+          "default": ".vscode/commit-rules.md",
+          "description": "Relative path to a custom commit rules file. If the file doesn't exist, the built-in default prompt is used."
+        },
+        "sparkleCommit.commitStyle": {
+          "type": "string",
+          "enum": ["conventional", "prefix", "simple"],
+          "default": "conventional",
+          "enumDescriptions": [
+            "Conventional Commits: type(scope): description",
+            "Prefix only: type: description (no scope)",
+            "Simple: plain descriptive message with no prefix"
+          ],
+          "description": "Commit message style. Ignored when a custom rules file exists at commitRulesPath."
+        },
+        "sparkleCommit.diffSource": {
+          "type": "string",
+          "enum": ["staged", "all", "auto"],
+          "default": "staged",
+          "enumDescriptions": [
+            "Only staged changes (git diff --staged)",
+            "All working tree changes (git diff HEAD)",
+            "Auto: use staged if available, otherwise all changes"
+          ],
+          "description": "Which changes to include when generating the commit message."
         }
       }
     }
