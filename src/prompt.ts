@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+export type CommitStyle = 'conventional' | 'prefix' | 'simple';
+
 const DEFAULT_RULES_PATH = '.vscode/commit-rules.md';
 
 const SEPARATOR = '\n\n--- STAGED GIT DIFF BELOW ---\n\n';
@@ -11,7 +13,7 @@ Return ONLY the recommended commit message.
 No explanations. No markdown formatting. No code blocks.
 Just the raw commit message text.`;
 
-const DEFAULT_TEMPLATE = `Analyze the staged Git diff below and generate a single commit message using the Conventional Commits format:
+const CONVENTIONAL_TEMPLATE = `Analyze the staged Git diff below and generate a single commit message using the Conventional Commits format:
 
 \`\`\`
 <type>(<scope>): <description>
@@ -39,13 +41,52 @@ feat, fix, docs, style, refactor, perf, test, build, ci, chore
 If changes are unrelated, suggest splitting into multiple commits.
 Never include secrets, tokens, or sensitive data.`;
 
-export async function loadPromptTemplate(workspaceRoot: string, rulesPath?: string): Promise<string> {
+const PREFIX_TEMPLATE = `Analyze the staged Git diff below and generate a single commit message with this format:
+
+\`\`\`
+<type>: <description>
+\`\`\`
+
+**Types** (pick the most appropriate):
+feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+**Rules**:
+- Imperative mood ("add" not "added")
+- Lowercase after colon, no trailing period
+- Max 72 chars for the entire line
+- Focus on WHAT and WHY
+- No scope, no body, no footer — just the single line
+
+Never include secrets, tokens, or sensitive data.`;
+
+const SIMPLE_TEMPLATE = `Analyze the staged Git diff below and generate a single commit message.
+
+**Rules**:
+- One concise line, imperative mood ("add" not "added")
+- Max 72 characters
+- Focus on WHAT changed and WHY
+- No prefix, no type label, no scope — just a plain description
+- Lowercase first letter, no trailing period
+
+Never include secrets, tokens, or sensitive data.`;
+
+const TEMPLATES: Record<CommitStyle, string> = {
+	conventional: CONVENTIONAL_TEMPLATE,
+	prefix: PREFIX_TEMPLATE,
+	simple: SIMPLE_TEMPLATE,
+};
+
+export async function loadPromptTemplate(
+	workspaceRoot: string,
+	rulesPath?: string,
+	commitStyle: CommitStyle = 'conventional'
+): Promise<string> {
 	try {
 		const relativePath = rulesPath || DEFAULT_RULES_PATH;
 		const templatePath = path.join(workspaceRoot, relativePath);
 		return await fs.promises.readFile(templatePath, 'utf-8');
 	} catch {
-		return DEFAULT_TEMPLATE;
+		return TEMPLATES[commitStyle] ?? TEMPLATES.conventional;
 	}
 }
 

@@ -18,7 +18,8 @@ That's it. Works out of the box.
 ## Features
 
 - **One-click generation** — Sparkle button in the Source Control title bar, or use the command palette
-- **Conventional Commits** — Generates `<type>(<scope>): <description>` format with proper imperative mood and 72-char limits
+- **Multiple commit styles** — Conventional (`type(scope): desc`), prefix (`type: desc`), or simple (plain message)
+- **Flexible diff source** — Analyze staged changes, all working tree changes, or auto-detect
 - **Zero config needed** — Built-in prompt works immediately; customize only if you want to
 - **Custom commit rules** — Drop a markdown file in your workspace to define your own commit style
 - **Model selection** — Switch between Haiku (fast), Sonnet (balanced), or Opus (most capable)
@@ -37,7 +38,9 @@ That's it. Works out of the box.
 | Setting | Default | Description |
 |---|---|---|
 | `sparkleCommit.claudeModel` | `haiku` | Model alias (`sonnet`, `opus`, `haiku`) or full model name |
-| `sparkleCommit.commitRulesPath` | `.vscode/commit-rules.md` | Path to custom commit rules file (relative to workspace root) |
+| `sparkleCommit.commitStyle` | `conventional` | Message format: `conventional`, `prefix`, or `simple` |
+| `sparkleCommit.diffSource` | `staged` | Changes to analyze: `staged`, `all`, or `auto` |
+| `sparkleCommit.commitRulesPath` | `.vscode/commit-rules.md` | Path to custom commit rules file (overrides `commitStyle`) |
 
 ## Customizing the Prompt
 
@@ -68,7 +71,9 @@ Every suggestion helps. Even a quick "I wish it could..." is useful.
 ### 1.1.0
 - Built-in default prompt — works out of the box, no template file needed
 - Custom prompt override via configurable rules file path
-- Configurable commit rules path setting
+- Commit style setting — conventional, prefix, or simple formats
+- Diff source setting — staged, all, or auto-detect
+- Marketplace discoverability improvements (categories + keywords)
 
 ### 1.0.1
 - Initial release — one-click commit message generation with Claude Code CLI
