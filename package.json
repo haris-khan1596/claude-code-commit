@@ -4,7 +4,7 @@
   "publisher": "HarisKhan1596",
   "icon": "images/icon.png",
   "description": "One-click conventional commit messages powered by Claude Code CLI. Analyzes your staged changes and generates well-structured commit messages right in VS Code's Source Control panel.",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.109.0"
   },
@@ -62,7 +62,11 @@
         },
         "sparkleCommit.commitStyle": {
           "type": "string",
-          "enum": ["conventional", "prefix", "simple"],
+          "enum": [
+            "conventional",
+            "prefix",
+            "simple"
+          ],
           "default": "conventional",
           "enumDescriptions": [
             "Conventional Commits: type(scope): description",
@@ -73,7 +77,11 @@
         },
         "sparkleCommit.diffSource": {
           "type": "string",
-          "enum": ["staged", "all", "auto"],
+          "enum": [
+            "staged",
+            "all",
+            "auto"
+          ],
           "default": "staged",
           "enumDescriptions": [
             "Only staged changes (git diff --staged)",
