@@ -26,20 +26,30 @@ Hit the sparkle button, get a well-crafted commit message. Review it, commit. Th
 4. Claude generates a conventional commit message and populates the SCM input box.
 5. Review the message, edit if needed, and commit.
 
+## Customizing the Prompt
+
+By default the extension uses a built-in Conventional Commits prompt. To override it, create a `.vscode/commit-rules.md` file in your workspace root with your own instructions. The extension will use that file instead.
+
+If the file is absent or unreadable, the built-in default is used automatically — no setup required.
+
 ## Extension Settings
 
 This extension contributes the following setting:
 
-* `sparkleCommit.claudeModel`: Claude model alias or name (default: `"sonnet"`). Run `claude --models` to see available options.
+* `sparkleCommit.claudeModel`: Claude model alias or name (default: `"haiku"`). Run `claude --models` to see available options.
 
 ## Known Issues
 
 - Test suite is currently a stub — full test coverage is planned.
-- This is a pre-release version (0.0.1).
 
 ## Release Notes
 
-### 0.0.1
+### 1.1.0
+
+- Built-in default prompt — works out of the box, no template file needed
+- Custom prompt override via `.vscode/commit-rules.md`
+
+### 1.0.1
 
 Initial release — core commit message generation with Claude Code CLI integration.
 

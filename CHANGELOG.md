@@ -4,7 +4,19 @@ All notable changes to the "claude-code-commits" extension will be documented in
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [1.0.0] - 2026-02-19
+## [1.1.0] - 2026-02-19
+
+### Added
+
+- Built-in default Conventional Commits prompt — works out of the box without any template file
+- Optional custom prompt override via `.vscode/commit-rules.md` in your workspace
+
+### Changed
+
+- Prompt template path moved from `.claude/commands/git.commit.md` to `.vscode/commit-rules.md`
+- Missing template no longer shows an error — falls back to the built-in default silently
+
+## [1.0.1] - 2026-02-18
 
 ### Added
 
@@ -13,7 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Conventional Commits format with automatic type, scope, and description
 - Commit history analysis to match project style
 - Configurable Claude model selection (`sparkleCommit.claudeModel` setting)
-- Prompt template at `.claude/commands/git.commit.md` for customizable generation
+- CI publish workflow for automated releases
 - Extension icon for marketplace listing
 - MIT license
 
