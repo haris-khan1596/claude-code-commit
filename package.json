@@ -4,7 +4,7 @@
   "publisher": "HarisKhan1596",
   "icon": "images/icon.png",
   "description": "One-click conventional commit messages powered by Claude Code CLI. Analyzes your staged changes and generates well-structured commit messages right in VS Code's Source Control panel.",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.109.0"
   },
